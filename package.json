@@ -1,0 +1,23 @@
+{
+  "name": "combos-dudu-pablo-v1.0",
+  "version": "1.0.0",
+  "description": "Projeto de marketpalce hiperlocal",
+  "scripts": {
+    "test": "node --test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/slovinscki/combos-dudu-pablo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/slovinscki/combos-dudu-pablo/issues"
+  },
+  "homepage": "https://github.com/slovinscki/combos-dudu-pablo#readme",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0"
+  }
+}
