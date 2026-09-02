@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/slovinscki/combos-dudu-pablo#readme",
   "dependencies": {
-    "@neondatabase/serverless": "^1.1.0"
+    "@neondatabase/serverless": "^1.1.0",
+    "@vercel/analytics": "^2.0.1"
   }
 }
