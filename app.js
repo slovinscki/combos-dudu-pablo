@@ -1,3 +1,7 @@
+import { inject } from '@vercel/analytics';
+
+inject();
+
 const money = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
 function renderPrice(card, priceCents) {
