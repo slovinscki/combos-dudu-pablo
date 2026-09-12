@@ -18,12 +18,22 @@ function statusSelect(kind, id, current, options) {
 }
 
 function render({ products, leads, orders }) {
-  document.querySelector("#products").innerHTML = products.map((product) => `<article class="card"><h3>${escapeHtml(product.name)}</h3><p>${money.format(product.price_cents / 100)}</p><button data-action="availability" data-slug="${escapeHtml(product.slug)}" data-active="${product.active}">${product.active ? "Disponível · desativar" : "Indisponível · ativar"}</button></article>`).join("");
-  document.querySelector("#leads").innerHTML = leads.length ? leads.map((lead) => `<tr><td><strong>${escapeHtml(lead.name)}</strong><small>${escapeHtml(lead.phone)}${lead.email ? ` · ${escapeHtml(lead.email)}` : ""}</small></td><td>Combo Micropigmentação<small>Já possui micropigmentação</small></td><td>${dateTime.format(new Date(lead.created_at))}</td><td>${statusSelect("lead", lead.id, lead.status, [["new","Novo"],["contacted","Contatado"],["evaluated","Avaliado"],["closed","Encerrado"]])}</td></tr>`).join("") : '<tr><td colspan="4">Nenhum lead recebido.</td></tr>';
+  document.querySelector("#products").innerHTML = products.map((product) => {
+    const partner = product.merchant_slug === "pizzaria-varandas" ? "Pizzaria Varanda" : "Fer Reinher";
+    const price = product.price_cents == null ? "Consulta / reserva" : money.format(product.price_cents / 100);
+    return `<article class="card"><small>${partner}</small><h3>${escapeHtml(product.name)}</h3><p>${price}</p><button data-action="availability" data-merchant="${escapeHtml(product.merchant_slug)}" data-slug="${escapeHtml(product.slug)}" data-active="${product.active}">${product.active ? "Disponível · desativar" : "Indisponível · ativar"}</button></article>`;
+  }).join("");
+  document.querySelector("#leads").innerHTML = leads.length ? leads.map((lead) => {
+    const festa = lead.merchant_slug === "pizzaria-varandas" && lead.source_product_slug === "combo-festa";
+    const origin = festa ? "Pizzaria Varanda · Combo Festa" : "Fer Reinher · Combo Micropigmentação";
+    const details = festa ? `${escapeHtml(lead.metadata?.partySize ?? "—")} pessoas${lead.metadata?.desiredDate ? `<small>Data desejada: ${escapeHtml(lead.metadata.desiredDate)}</small>` : ""}${lead.metadata?.notes ? `<small>${escapeHtml(lead.metadata.notes)}</small>` : ""}` : "Já possui micropigmentação";
+    return `<tr><td><strong>${escapeHtml(lead.name)}</strong><small>${escapeHtml(lead.phone)}${lead.email ? ` · ${escapeHtml(lead.email)}` : ""}</small></td><td>${origin}</td><td>${details}</td><td>${dateTime.format(new Date(lead.created_at))}</td><td>${statusSelect("lead", lead.id, lead.status, [["new","Novo"],["contacted","Contatado"],["evaluated","Avaliado"],["closed","Encerrado"]])}</td></tr>`;
+  }).join("") : '<tr><td colspan="5">Nenhum lead ou reserva recebido.</td></tr>';
   document.querySelector("#orders").innerHTML = orders.length ? orders.map((order) => {
     const entitlements = Array.isArray(order.entitlements) ? order.entitlements : [];
     const credits = entitlements.map((item) => `${escapeHtml(item.serviceName)}: ${item.usedUnits}/${item.totalUnits}`).join("<br>") || "—";
-    return `<tr><td><strong>${escapeHtml(order.customer_name)}</strong><small>${escapeHtml(order.customer_phone)}${order.customer_email ? ` · ${escapeHtml(order.customer_email)}` : ""}</small></td><td>${money.format(order.total_cents / 100)}</td><td>${credits}</td><td>${dateTime.format(new Date(order.created_at))}</td><td>${statusSelect("order", order.id, order.status, [["pending_confirmation","A confirmar"],["confirmed","Confirmado"],["cancelled","Cancelado"]])}</td></tr>`;
+    const partner = order.merchant_slug === "pizzaria-varandas" ? "Pizzaria Varanda" : "Fer Reinher";
+    return `<tr><td><strong>${escapeHtml(order.customer_name)}</strong><small>${partner} · ${escapeHtml(order.customer_phone)}${order.customer_email ? ` · ${escapeHtml(order.customer_email)}` : ""}</small></td><td>${money.format(order.total_cents / 100)}</td><td>${credits}</td><td>${dateTime.format(new Date(order.created_at))}</td><td>${statusSelect("order", order.id, order.status, [["pending_confirmation","A confirmar"],["confirmed","Confirmado"],["cancelled","Cancelado"]])}</td></tr>`;
   }).join("") : '<tr><td colspan="5">Nenhum pedido recebido.</td></tr>';
 }
 
@@ -44,7 +54,7 @@ async function update(body) {
 
 document.querySelector("#login-form").addEventListener("submit", (event) => { event.preventDefault(); token = document.querySelector("#token").value; sessionStorage.setItem("comboAdminToken", token); load(); });
 document.querySelector("#refresh").addEventListener("click", load);
-document.querySelector("#products").addEventListener("click", (event) => { const button = event.target.closest("[data-action=availability]"); if (button) update({ action: "set_product_availability", slug: button.dataset.slug, active: button.dataset.active !== "true" }); });
+document.querySelector("#products").addEventListener("click", (event) => { const button = event.target.closest("[data-action=availability]"); if (button) update({ action: "set_product_availability", merchantSlug: button.dataset.merchant, slug: button.dataset.slug, active: button.dataset.active !== "true" }); });
 document.querySelector("#leads").addEventListener("change", (event) => { if (event.target.dataset.kind === "lead") update({ action: "set_lead_status", id: event.target.dataset.id, status: event.target.value }); });
 document.querySelector("#orders").addEventListener("change", (event) => { if (event.target.dataset.kind === "order") update({ action: "set_order_status", id: event.target.dataset.id, status: event.target.value }); });
 if (token) load();

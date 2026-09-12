@@ -3,30 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Pizzaria Varandas — combos para juntar a galera." />
-    <title>Varandas Vibe | Combos</title>
+    <meta name="description" content="Pizzaria Varanda — combos para juntar a galera." />
+    <title>Varanda Vibe | Combos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../platform-tabs.css" />
     <link rel="stylesheet" href="vibe.css" />
+    <link rel="stylesheet" href="../promos.css" />
     <style>.vibe-duo{position:absolute;z-index:3;right:17%;bottom:-6px;width:min(29vw,330px);filter:drop-shadow(8px 9px 0 #16121c);pointer-events:none}@media(max-width:760px){.vibe-duo{width:190px;right:2%;bottom:-2px}}</style>
   </head>
   <body>
-    <nav class="platform-tabs" aria-label="Projetos do Combo Club"><a href="/">Combo Club</a><a href="/pizzaria-varandas-combos/" aria-current="page">Pizzaria Varandas</a><a href="/fer-reinher-estetista/">Fer Reinher</a></nav>
+    <nav class="platform-tabs" aria-label="Projetos do Combo Club"><a href="/">Combo Club</a><a href="/pizzaria-varandas-combos/" aria-current="page">Pizzaria Varanda</a><a href="/fer-reinher-estetista/">Fer Reinher</a></nav>
     <header class="hero" id="inicio">
-      <nav><a href="#inicio" class="logo">VARANDAS<span>VIBE!</span></a><a href="#pedido" class="basket">MEUS COMBOS <b id="nav-count">0</b></a></nav>
+      <nav><a href="#inicio" class="logo">VARANDA<span>VIBE!</span></a><a href="#pedido" class="basket">MEUS COMBOS <b id="nav-count">0</b></a></nav>
       <div class="sticker sticker-one">PIZZA<br>+ GALERA</div><div class="sticker sticker-two">BORA?</div><img class="vibe-duo" src="dupla-vibe.webp" alt="Dupla de amigos curtindo uma fatia de pizza" />
       <div class="hero-text"><p class="kicker">A mesa é o rolê</p><h1>JUNTA A <i>GALERA.</i><br>CHAMA A PIZZA.</h1><p>Combos para deixar o encontro mais gostoso. Escolhe os seus e manda sua pré-reserva.</p><a href="#combos" class="cta">VER OS COMBOS <span>↓</span></a></div>
     </header>
     <main>
-      <section id="combos" class="combos"><div class="section-title"><p class="kicker">DO SEU JEITO</p><h2>QUAL VAI SER?</h2><p>Sabores, itens, valores e condições serão confirmados pela Pizzaria Varandas.</p></div><div id="combo-grid" class="combo-grid"></div></section>
-      <section class="reservation" id="pedido"><div class="reservation-text"><p class="kicker">SEM COMPLICAÇÃO</p><h2>MANDA A<br><i>VIBE.</i></h2><p>Isso é uma pré-reserva. A equipe confirma disponibilidade e todos os detalhes antes de fechar qualquer pedido.</p><p class="note">Políticas de entrada, cancelamento e reembolso: <b>a confirmar com a Pizzaria Varandas.</b></p></div>
+      <section id="combos" class="combos"><div class="section-title"><p class="kicker">DO SEU JEITO</p><h2>QUAL VAI SER?</h2><p>Ofertas por tempo limitado. Delivery com pizzas não especiais e sem borda; festa a partir de 6 pessoas.</p></div><div id="combo-grid" class="combo-grid"></div></section>
+      <section class="reservation" id="pedido"><div class="reservation-text"><p class="kicker">SEM COMPLICAÇÃO</p><h2>MANDA A<br><i>VIBE.</i></h2><p>Envie seu pedido de delivery ou consulte uma reserva do Combo Festa.</p><p class="note"><b>Delivery:</b> exceto pizzas especiais; pizzas sem borda. O Combo Festa deve ser consultado separadamente.</p></div>
         <div class="panel"><div class="panel-title"><h3>SELECIONADOS</h3><span id="selection-status">0 combo</span></div><ul id="selected-list"><li class="empty">Escolhe um combo ali em cima ✦</li></ul><div class="totals"><p><span>Total</span><b id="total-price">A confirmar</b></p><p><span>Entrada</span><b>A confirmar</b></p><p class="balance"><span>Saldo depois</span><b>A confirmar</b></p></div>
-          <form id="reservation-form" novalidate><label>SEU NOME<input name="name" required autocomplete="name" placeholder="Nome completo" /></label><label>WHATSAPP / TELEFONE<input name="phone" required inputmode="tel" autocomplete="tel" placeholder="(00) 00000-0000" /></label><label>E-MAIL<input name="email" required type="email" autocomplete="email" placeholder="voce@email.com" /></label><label class="check"><input type="checkbox" name="marketing" /><span>Quero receber promoções e novidades da Pizzaria Varandas.</span></label><p class="minor-note">Se você tem menos de 16 anos, peça ajuda a uma pessoa responsável para enviar seus dados.</p><button class="send">ENVIAR PRÉ-RESERVA <span>→</span></button><p id="form-message" aria-live="polite"></p></form>
+          <form id="reservation-form" novalidate><label>SEU NOME<input name="name" required autocomplete="name" placeholder="Nome completo" /></label><label>WHATSAPP / TELEFONE<input name="phone" required inputmode="tel" autocomplete="tel" placeholder="(00) 00000-0000" /></label><label>E-MAIL (OPCIONAL)<input name="email" type="email" autocomplete="email" placeholder="voce@email.com" /></label><label class="check delivery-rules" id="delivery-rules" hidden><input type="checkbox" name="acceptsDeliveryRestrictions" /><span>Confirmo: pizza não especial e sem borda.</span></label><div class="festa-fields" id="festa-fields" hidden><label>NÚMERO DE PESSOAS<input name="partySize" type="number" min="6" max="200" inputmode="numeric" placeholder="Mínimo 6" /></label><label>DATA DESEJADA (OPCIONAL)<input name="desiredDate" maxlength="40" placeholder="Ex.: sábado à noite" /></label><label>OBSERVAÇÕES (OPCIONAL)<input name="notes" maxlength="500" placeholder="Conte sobre a comemoração" /></label></div><label class="check"><input type="checkbox" name="marketing" /><span>Quero receber promoções e novidades da Pizzaria Varanda.</span></label><p class="minor-note">Se você tem menos de 16 anos, peça ajuda a uma pessoa responsável para enviar seus dados.</p><button class="send" id="submit-order">ENVIAR PEDIDO <span>→</span></button><p id="form-message" aria-live="polite"></p></form>
         </div></section>
     </main>
-    <footer><a href="#inicio" class="logo">VARANDAS<span>VIBE!</span></a><p>Dados comerciais e canais oficiais: a inserir.</p></footer>
+    <footer><a href="#inicio" class="logo">VARANDA<span>VIBE!</span></a><p>Pedidos e reservas sujeitos à confirmação da equipe.</p></footer>
     <script src="vibe.js"></script>
   </body>
 </html>

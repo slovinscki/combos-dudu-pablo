@@ -3,23 +3,25 @@
 Projeto unificado do Combo Club. A raiz funciona como hub e cada parceiro mantém uma rota própria:
 
 - `/` — Combo Club
-- `/pizzaria-varandas-combos/` — Pizzaria Varandas
+- `/pizzaria-varandas-combos/` — Pizzaria Varanda (slug técnico legado preservado)
 - `/fer-reinher-estetista/` — Fer Reinher Estetista
-- `/admin/` — disponibilidade, leads, pedidos e créditos da Fer
+- `/admin/` — disponibilidade, leads, reservas, pedidos e créditos dos parceiros
 
 ## Configuração local
 
 1. Instale as dependências com `npm ci`.
 2. Copie `.env.example` para `.env.local`.
 3. Configure `DATABASE_URL` e um `ADMIN_TOKEN` longo e exclusivo.
-4. Execute a migration `migrations/001_unified_combo_platform.sql` em uma branch de teste do Neon antes de aplicá-la ao banco usado pela Vercel.
+4. Execute, em ordem, `migrations/001_unified_combo_platform.sql` e `migrations/002_pizzaria_varanda_combos.sql` em uma branch de teste do Neon antes de aplicá-las ao banco usado pela Vercel.
 5. Inicie com `npx vercel dev`.
 
 O painel solicita o `ADMIN_TOKEN` e o mantém apenas na sessão do navegador.
 
 ## Disponibilidade
 
-Cada combo da Fer utiliza `products.active`, além dos campos opcionais `starts_at` e `ends_at`. O painel altera somente `active`. Desativar uma oferta impede novas solicitações no backend e não remove pedidos, itens ou créditos existentes.
+Cada combo utiliza `products.active`, além dos campos opcionais `starts_at` e `ends_at`. O painel altera somente `active`. Desativar uma oferta impede novas solicitações no backend e não remove pedidos, itens, leads ou créditos existentes.
+
+O identificador técnico `pizzaria-varandas` e a rota `/pizzaria-varandas-combos/` foram preservados para não quebrar registros e links; o nome público correto é **Pizzaria Varanda**.
 
 ## Fluxos para validar antes do deploy
 
@@ -31,5 +33,18 @@ Cada combo da Fer utiliza `products.active`, além dos campos opcionais `starts_
 6. **Oferta encerrada:** desative um combo no painel, recarregue a página da Fer e confirme botão inativo. Uma chamada direta à API para esse combo deve retornar HTTP 409.
 7. **Preservação:** depois de desativar, confirme que pedidos e créditos anteriores continuam visíveis no painel.
 8. **Responsividade:** verifique `/`, Varandas, Fer e `/admin/` em 390 px e 1280 px, sem rolagem horizontal inesperada.
+
+### Pizzaria Varanda
+
+1. **Combo Casal:** selecione o combo, confirme explicitamente “pizza não especial e sem borda” e envie. Deve criar um pedido de R$ 95,00.
+2. **Para Compartilhar:** repita o fluxo e confirme um pedido de R$ 120,00.
+3. **Regra obrigatória:** tente enviar sem marcar a confirmação. O formulário deve impedir; uma chamada direta à API também deve retornar HTTP 400.
+4. **Pizza especial:** envie `pizzaSelections` com `isSpecial: true` ou categoria `especial`. A API deve retornar HTTP 400.
+5. **Borda:** envie `pizzaSelections` com `hasCrust: true`, `stuffedCrust: true` ou uma borda diferente de `none`/`sem borda`. A API deve retornar HTTP 400.
+6. **Combo Festa:** selecione-o sozinho. O total deve mostrar “Consulta / reserva”, nunca R$ 0,00. Informe no mínimo 6 pessoas; a API deve criar um lead, não um pedido.
+7. **Festa abaixo do mínimo:** envie 5 pessoas e confirme HTTP 400.
+8. **Disponibilidade:** desative cada oferta no painel e confirme botão inativo e HTTP 409 para chamadas diretas.
+
+Não existe catálogo de sabores ou bordas neste repositório. Por isso essas opções não são oferecidas no frontend. As condições aparecem antes do envio, exigem confirmação e são validadas defensivamente no backend caso uma futura etapa envie `pizzaSelections`. A escolha do sabor elegível continua sujeita à confirmação da equipe.
 
 Não há integração de pagamento neste repositório. Uma solicitação nasce como `pending_confirmation`; somente a confirmação administrativa libera os créditos.
