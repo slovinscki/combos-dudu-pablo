@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Projeto de marketpalce hiperlocal",
   "scripts": {
+    "db:audit": "node scripts/audit-db.mjs",
+    "db:migrate": "node scripts/migrate.mjs",
     "test": "node --test"
   },
   "repository": {

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Combos promocionais de Fer Reinher Estetista por tempo limitado." />
+    <title>Fer Reinher Estetista | Combos promocionais</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../platform-tabs.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav class="platform-tabs" aria-label="Projetos do Combo Club">
+      <a href="/">Combo Club</a>
+      <a href="/pizzaria-varandas-combos/">Pizzaria Varandas</a>
+      <a href="/fer-reinher-estetista/" aria-current="page">Fer Reinher</a>
+    </nav>
+    <header class="topbar">
+      <a class="brand" href="#inicio">Fer <em>Reinher</em><span>Estetista</span></a>
+      <a class="header-cta" href="#combos">Ver combos <span>↓</span></a>
+    </header>
+    <main>
+      <section class="hero" id="inicio">
+        <div class="hero-copy">
+          <p class="eyebrow">AUTOCUIDADO · DROP DO DUDU</p>
+          <h1>Seu cuidado,<br /><em>garantido agora.</em></h1>
+          <p>Três condições especiais para cuidar das sobrancelhas e do olhar. Quem garantir durante o período disponível mantém o direito aos atendimentos do pacote.</p>
+          <a class="button primary" href="#combos">Conhecer os combos <span>→</span></a>
+        </div>
+        <div class="hero-image" role="img" aria-label="Detalhe de sobrancelha e olhar"></div>
+      </section>
+
+      <section class="combos" id="combos" aria-labelledby="combos-title">
+        <div class="section-head">
+          <p class="eyebrow">OFERTA POR TEMPO LIMITADO</p>
+          <h2 id="combos-title">Escolha seu combo</h2>
+          <p>A disponibilidade pode ser encerrada sem aviso, mas os pedidos já confirmados continuam registrados.</p>
+        </div>
+        <div class="combo-grid">
+          <article class="combo-card design" data-product="design-3">
+            <span class="card-number">01</span><span class="limited">Tempo limitado</span>
+            <div class="card-content"><h3>Design</h3><p>Pacote com direito a <strong>3 atendimentos</strong> de design de sobrancelha.</p><strong class="price">R$ 114,00</strong><button class="choose-combo" type="button" data-slug="design-3" aria-pressed="false">Escolher <span>→</span></button><small class="availability-label">Disponível</small></div>
+          </article>
+          <article class="combo-card lash" data-product="lash-design">
+            <span class="card-number">02</span><span class="limited">Tempo limitado</span>
+            <div class="card-content"><h3>Lash + Design</h3><p><strong>1 Lash Lifting</strong><br />+ 1 Design de sobrancelha</p><strong class="price">R$ 150,00</strong><button class="choose-combo" type="button" data-slug="lash-design" aria-pressed="false">Escolher <span>→</span></button><small class="availability-label">Disponível</small></div>
+          </article>
+          <article class="combo-card micro" data-product="micropigmentacao">
+            <span class="card-number">03</span><span class="limited">Tempo limitado</span>
+            <div class="card-content"><h3>Micropigmentação</h3><p><strong>1 Micropigmentação</strong> de sobrancelha. Requer uma resposta antes da solicitação.</p><strong class="price">R$ 630,00</strong><button class="choose-combo" type="button" data-slug="micropigmentacao" aria-pressed="false">Escolher <span>→</span></button><small class="availability-label">Disponível</small></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="checkout" id="pedido" aria-labelledby="pedido-title">
+        <div class="checkout-intro"><p class="eyebrow">SEUS COMBOS</p><h2 id="pedido-title">Garanta enquanto estiver disponível.</h2><p>Preencha seus dados para registrar a solicitação. A equipe da Fer fará a confirmação do pedido e orientará os próximos passos.</p></div>
+        <div class="checkout-panel">
+          <div class="selection"><div><span>Selecionados</span><strong id="selection-count">0</strong></div><ul id="selected-combos"><li>Nenhum combo escolhido.</li></ul><div class="total"><span>Total</span><strong id="total-value">R$ 0,00</strong></div></div>
+          <form id="order-form" novalidate>
+            <label>Nome completo<input name="name" autocomplete="name" required placeholder="Como podemos chamar você?" /></label>
+            <div class="two-fields"><label>WhatsApp/telefone<input name="phone" autocomplete="tel" inputmode="tel" required placeholder="(00) 00000-0000" /></label><label>E-mail<input name="email" autocomplete="email" type="email" placeholder="voce@email.com" /></label></div>
+            <fieldset id="micro-question" hidden>
+              <legend>Você já possui micropigmentação nas sobrancelhas?</legend>
+              <div class="radio-row"><label><input type="radio" name="hasPreviousMicropigmentation" value="false" /> Não</label><label><input type="radio" name="hasPreviousMicropigmentation" value="true" /> Sim</label></div>
+              <p>Não é possível realizar uma nova micropigmentação diretamente sobre um procedimento anterior sem uma avaliação prévia.</p>
+            </fieldset>
+            <label class="marketing"><input type="checkbox" name="marketingConsent" /> <span>Quero receber promoções e novidades da Fer Reinher Estetista.</span></label>
+            <button class="submit-button" id="submit-order" type="submit">Registrar solicitação <span>→</span></button>
+            <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+    <footer><a class="brand" href="#inicio">Fer <em>Reinher</em><span>Estetista</span></a><p>Estética que acolhe a sua essência.</p><small>© 2026 Fer Reinher Estetista.</small></footer>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

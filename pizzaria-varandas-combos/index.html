@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Pizzaria Varandas — escolha seus combos e faça sua pré-reserva." />
+    <title>Pizzaria Varandas | Combos especiais</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../platform-tabs.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav class="platform-tabs" aria-label="Projetos do Combo Club">
+      <a href="/">Combo Club</a>
+      <a href="/pizzaria-varandas-combos/" aria-current="page">Pizzaria Varandas</a>
+      <a href="/fer-reinher-estetista/">Fer Reinher</a>
+    </nav>
+    <header class="hero">
+      <nav class="nav container" aria-label="Navegação principal">
+        <a class="brand" href="#inicio" aria-label="Pizzaria Varandas, início"><span class="brand-mark">V</span><span>Pizzaria<br />Varandas</span></a>
+        <a class="nav-link" href="#pedido">Minha pré-reserva <span id="nav-count">0</span></a>
+      </nav>
+      <div class="hero-content container" id="inicio">
+        <p class="eyebrow">Forno, mesa & bons encontros</p>
+        <h1>A noite fica melhor <em>na Varandas.</em></h1>
+        <p class="hero-copy">Monte sua seleção de combos e envie uma pré-reserva. Nós confirmamos os detalhes com você.</p>
+        <a class="button button-light" href="#combos">Ver combos <span aria-hidden="true">↓</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="combos-section container" id="combos" aria-labelledby="combos-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">Para dividir, celebrar, repetir</p><h2 id="combos-title">Escolha seus combos</h2></div>
+          <p>Os valores e condições abaixo são exemplos de layout e serão substituídos pelas informações oficiais da Pizzaria Varandas.</p>
+        </div>
+        <div class="combo-grid" id="combo-grid"></div>
+      </section>
+
+      <section class="booking-section" id="pedido" aria-labelledby="pedido-title">
+        <div class="container booking-layout">
+          <div class="booking-intro">
+            <p class="eyebrow">Seu pedido começa aqui</p>
+            <h2 id="pedido-title">Pré-reserva</h2>
+            <p>Selecione quantos combos desejar. O envio não confirma a reserva: a equipe entrará em contato para validar disponibilidade e detalhes.</p>
+            <aside class="policy" aria-label="Condições de pré-reserva"><strong>Importante</strong><span>Políticas de entrada, cancelamento e reembolso: <b>a confirmar com a Pizzaria Varandas.</b></span></aside>
+          </div>
+          <div class="order-panel">
+            <div class="selection-head"><h3>Combos escolhidos</h3><span id="selection-status" aria-live="polite">Nenhum selecionado</span></div>
+            <ul class="selected-list" id="selected-list"><li class="empty-state">Clique em “Escolher” nos combos acima.</li></ul>
+            <div class="totals">
+              <div><span>Total dos combos</span><strong id="total-price">R$ —</strong></div>
+              <div><span>Entrada</span><strong id="deposit-price">A confirmar</strong></div>
+              <div class="balance"><span>Saldo posterior</span><strong id="balance-price">A confirmar</strong></div>
+            </div>
+            <form id="reservation-form" novalidate>
+              <label>Nome completo<input required name="name" autocomplete="name" placeholder="Como podemos te chamar?" /></label>
+              <div class="two-fields"><label>Telefone<input required name="phone" inputmode="tel" autocomplete="tel" placeholder="(00) 00000-0000" /></label><label>E-mail<input required type="email" name="email" autocomplete="email" placeholder="voce@email.com" /></label></div>
+              <label class="marketing"><input type="checkbox" name="marketing" /> <span>Quero receber promoções e novidades da Pizzaria Varandas.</span></label>
+              <button class="button submit" type="submit">Enviar pré-reserva <span aria-hidden="true">→</span></button>
+              <p class="form-message" id="form-message" aria-live="polite"></p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer container"><a class="brand" href="#inicio"><span class="brand-mark">V</span><span>Pizzaria<br />Varandas</span></a><p>Dados comerciais, cardápio e canais de atendimento: a inserir.</p></footer>
+    <script src="app.js"></script>
+  </body>
+</html>

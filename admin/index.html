@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><meta name="robots" content="noindex,nofollow" />
+    <title>Painel | Combo Club</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../platform-tabs.css" /><link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <nav class="platform-tabs" aria-label="Projetos do Combo Club"><a href="/">Combo Club</a><a href="/pizzaria-varandas-combos/">Pizzaria Varandas</a><a href="/fer-reinher-estetista/">Fer Reinher</a><a href="/admin/" aria-current="page">Painel</a></nav>
+    <main>
+      <header><div><p>COMBO CLUB · ADMIN</p><h1>Fer Reinher</h1></div><button id="refresh" type="button" hidden>Atualizar</button></header>
+      <section class="login" id="login"><h2>Acesso ao painel</h2><p>Informe o token administrativo configurado no ambiente da Vercel.</p><form id="login-form"><label>Token<input id="token" type="password" autocomplete="current-password" required /></label><button type="submit">Entrar</button></form><p id="login-message" role="status"></p></section>
+      <div id="dashboard" hidden>
+        <section><div class="section-title"><div><p>OFERTAS</p><h2>Disponibilidade</h2></div><span>Desativar não remove pedidos nem créditos.</span></div><div class="cards" id="products"></div></section>
+        <section><div class="section-title"><div><p>MICROPIGMENTAÇÃO</p><h2>Leads para avaliação</h2></div></div><div class="table-wrap"><table><thead><tr><th>Contato</th><th>Origem</th><th>Recebido</th><th>Status</th></tr></thead><tbody id="leads"></tbody></table></div></section>
+        <section><div class="section-title"><div><p>COMPRAS</p><h2>Pedidos e créditos</h2></div></div><div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Total</th><th>Créditos</th><th>Recebido</th><th>Status</th></tr></thead><tbody id="orders"></tbody></table></div></section>
+      </div>
+      <p class="global-message" id="global-message" role="status" aria-live="polite"></p>
+    </main>
+    <script type="module" src="admin.js"></script>
+  </body>
+</html>
