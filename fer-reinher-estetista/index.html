@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../platform-tabs.css" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="checkout.css" />
   </head>
   <body>
     <nav class="platform-tabs" aria-label="Projetos do Combo Club">
@@ -41,35 +42,43 @@
         <div class="combo-grid">
           <article class="combo-card design" data-product="design-3">
             <span class="card-number">01</span><span class="limited">Tempo limitado</span>
-            <div class="card-content"><h3>Design</h3><p>Pacote com direito a <strong>3 atendimentos</strong> de design de sobrancelha.</p><strong class="price">R$ 114,00</strong><button class="choose-combo" type="button" data-slug="design-3" aria-pressed="false">Escolher <span>→</span></button><small class="availability-label">Disponível</small></div>
+            <div class="card-content"><h3>3 Designs</h3><p>Pacote com <strong>3 utilizações</strong> de design de sobrancelha.</p><strong class="price">R$ 114,00</strong><span class="payment-preview">Paga R$ 17,10 agora · R$ 96,90 no atendimento</span><span class="validity-preview">Utilização: setembro a dezembro de 2026</span><button class="choose-combo" type="button" data-slug="design-3" aria-pressed="false">Escolher <span>→</span></button><small class="availability-label">Disponível</small></div>
           </article>
           <article class="combo-card lash" data-product="lash-design">
             <span class="card-number">02</span><span class="limited">Tempo limitado</span>
-            <div class="card-content"><h3>Lash + Design</h3><p><strong>1 Lash Lifting</strong><br />+ 1 Design de sobrancelha</p><strong class="price">R$ 150,00</strong><button class="choose-combo" type="button" data-slug="lash-design" aria-pressed="false">Escolher <span>→</span></button><small class="availability-label">Disponível</small></div>
+            <div class="card-content"><h3>Lash Lifting + Design</h3><p><strong>1 Lash Lifting</strong><br />+ 1 Design de sobrancelha</p><strong class="price">R$ 150,00</strong><span class="payment-preview">Paga R$ 22,50 agora · R$ 127,50 no atendimento</span><span class="validity-preview">Utilização: até 30 dias corridos após a compra</span><button class="choose-combo" type="button" data-slug="lash-design" aria-pressed="false">Escolher <span>→</span></button><small class="availability-label">Disponível</small></div>
           </article>
           <article class="combo-card micro" data-product="micropigmentacao">
             <span class="card-number">03</span><span class="limited">Tempo limitado</span>
-            <div class="card-content"><h3>Micropigmentação</h3><p><strong>1 Micropigmentação</strong> de sobrancelha. Requer uma resposta antes da solicitação.</p><strong class="price">R$ 630,00</strong><button class="choose-combo" type="button" data-slug="micropigmentacao" aria-pressed="false">Escolher <span>→</span></button><small class="availability-label">Disponível</small></div>
+            <div class="card-content"><h3>Micropigmentação</h3><p><strong>1 Micropigmentação</strong> de sobrancelha. Requer uma resposta antes da solicitação.</p><strong class="price">R$ 630,00</strong><span class="payment-preview">Paga R$ 94,50 agora · R$ 535,50 no atendimento</span><span class="validity-preview">Utilização: até 2 meses-calendário após a compra</span><button class="choose-combo" type="button" data-slug="micropigmentacao" aria-pressed="false">Escolher <span>→</span></button><small class="availability-label">Disponível</small></div>
           </article>
         </div>
       </section>
 
       <section class="checkout" id="pedido" aria-labelledby="pedido-title">
-        <div class="checkout-intro"><p class="eyebrow">SEUS COMBOS</p><h2 id="pedido-title">Garanta enquanto estiver disponível.</h2><p>Preencha seus dados para registrar a solicitação. A equipe da Fer fará a confirmação do pedido e orientará os próximos passos.</p></div>
+        <div class="checkout-intro"><p class="eyebrow">SEUS COMBOS</p><h2 id="pedido-title">Garanta com 15% via PIX.</h2><p>Você paga agora apenas a entrada de 15% para garantir o combo. O restante é pago diretamente à profissional no agendamento/atendimento.</p><p class="schedule-note"><strong>Agendamentos:</strong> somente de terça a sexta-feira.</p></div>
         <div class="checkout-panel">
-          <div class="selection"><div><span>Selecionados</span><strong id="selection-count">0</strong></div><ul id="selected-combos"><li>Nenhum combo escolhido.</li></ul><div class="total"><span>Total</span><strong id="total-value">R$ 0,00</strong></div></div>
+          <div class="selection"><div><span>Combo selecionado</span><strong id="selection-count">0</strong></div><ul id="selected-combos"><li>Nenhum combo escolhido.</li></ul><div class="purchase-summary"><div><span>Valor do combo</span><strong id="total-value">R$ 0,00</strong></div><div class="pay-now"><span>Você paga agora · PIX</span><strong id="platform-fee-value">R$ 0,00</strong></div><div><span>Saldo no atendimento · direto para Fer Reinher</span><strong id="partner-balance-value">R$ 0,00</strong></div></div><p class="fee-note">A entrada é sempre calculada em 15% do valor atual do combo.</p></div>
           <form id="order-form" novalidate>
             <label>Nome completo<input name="name" autocomplete="name" required placeholder="Como podemos chamar você?" /></label>
-            <div class="two-fields"><label>WhatsApp/telefone<input name="phone" autocomplete="tel" inputmode="tel" required placeholder="(00) 00000-0000" /></label><label>E-mail<input name="email" autocomplete="email" type="email" placeholder="voce@email.com" /></label></div>
+            <div class="two-fields"><label>WhatsApp/telefone<input name="phone" autocomplete="tel" inputmode="tel" required placeholder="(00) 00000-0000" /></label><label>E-mail<input name="email" autocomplete="email" type="email" required placeholder="voce@email.com" /></label></div>
             <fieldset id="micro-question" hidden>
               <legend>Você já possui micropigmentação nas sobrancelhas?</legend>
               <div class="radio-row"><label><input type="radio" name="hasPreviousMicropigmentation" value="false" /> Não</label><label><input type="radio" name="hasPreviousMicropigmentation" value="true" /> Sim</label></div>
               <p>Não é possível realizar uma nova micropigmentação diretamente sobre um procedimento anterior sem uma avaliação prévia.</p>
             </fieldset>
             <label class="marketing"><input type="checkbox" name="marketingConsent" /> <span>Quero receber promoções e novidades da Fer Reinher Estetista.</span></label>
-            <button class="submit-button" id="submit-order" type="submit">Registrar solicitação <span>→</span></button>
+            <button class="submit-button" id="submit-order" type="submit">Gerar PIX da entrada <span>→</span></button>
             <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
           </form>
+          <section class="payment-result" id="payment-result" hidden aria-live="polite">
+            <p class="eyebrow">PIX · SOMENTE A ENTRADA</p><h3>Finalize a garantia do combo</h3>
+            <p>Copie o código PIX abaixo. O valor corresponde somente aos 15% exibidos no resumo.</p>
+            <strong class="pix-amount" id="pix-amount"></strong><textarea id="pix-code" readonly aria-label="Código PIX copia e cola"></textarea>
+            <div class="payment-actions"><button type="button" id="copy-pix">Copiar código PIX</button><button type="button" id="check-payment">Verificar pagamento</button></div>
+            <p class="form-message" id="payment-message" role="status"></p>
+          </section>
+          <section class="confirmation" id="confirmation" hidden aria-live="polite"><p class="eyebrow">PAGAMENTO CONFIRMADO</p><h3>Combo garantido!</h3><div id="confirmation-details"></div></section>
         </div>
       </section>
     </main>

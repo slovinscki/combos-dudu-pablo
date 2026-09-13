@@ -11,8 +11,8 @@ Projeto unificado do Combo Club. A raiz funciona como hub e cada parceiro manté
 
 1. Instale as dependências com `npm ci`.
 2. Copie `.env.example` para `.env.local`.
-3. Configure `DATABASE_URL` e um `ADMIN_TOKEN` longo e exclusivo.
-4. Execute, em ordem, `migrations/001_unified_combo_platform.sql` e `migrations/002_pizzaria_varanda_combos.sql` em uma branch de teste do Neon antes de aplicá-las ao banco usado pela Vercel.
+3. Configure `DATABASE_URL`, um `ADMIN_TOKEN` longo e exclusivo e os dados PIX (`PIX_KEY`, `PIX_MERCHANT_NAME`, `PIX_MERCHANT_CITY`). Não há chave PIX real versionada no repositório.
+4. Execute, em ordem, `migrations/001_unified_combo_platform.sql`, `002_pizzaria_varanda_combos.sql` e `003_fer_payment_validity_and_usage.sql` em uma branch de teste do Neon antes de aplicá-las ao banco usado pela Vercel.
 5. Inicie com `npx vercel dev`.
 
 O painel solicita o `ADMIN_TOKEN` e o mantém apenas na sessão do navegador.
@@ -47,4 +47,20 @@ O identificador técnico `pizzaria-varandas` e a rota `/pizzaria-varandas-combos
 
 Não existe catálogo de sabores ou bordas neste repositório. Por isso essas opções não são oferecidas no frontend. As condições aparecem antes do envio, exigem confirmação e são validadas defensivamente no backend caso uma futura etapa envie `pizzaSelections`. A escolha do sabor elegível continua sujeita à confirmação da equipe.
 
-Não há integração de pagamento neste repositório. Uma solicitação nasce como `pending_confirmation`; somente a confirmação administrativa libera os créditos.
+## Pagamento e utilização da Fer Reinher
+
+- A entrada é calculada no backend com inteiros em centavos: `round(total * platform_fee_bps / 10000)`. Para a Fer, `platform_fee_bps = 1500` (15%).
+- O PIX copia e cola contém somente a entrada. O saldo da Fer é persistido separadamente e não é tratado como recebível do ComboClub.
+- A confirmação do PIX é administrativa neste estágio porque ainda não há provedor/webhook de pagamento configurado. O cliente pode consultar a confirmação usando o token público opaco devolvido na compra.
+- A validade é copiada para cada item no momento da compra. “3 Designs” vale de 01/09/2026 a 31/12/2026; Lash + Design soma 30 dias; Micropigmentação soma 2 meses-calendário.
+- Agendamentos e consumos ficam no backend. A Fer aceita somente terça a sexta; um evento de utilização é único por agendamento, impedindo dupla contabilização.
+
+### Teste local dos três combos
+
+1. Configure uma branch de teste do Neon, aplique as três migrations e rode `npm test`.
+2. Inicie `npx vercel dev` e abra `/fer-reinher-estetista/`.
+3. Para cada combo, preencha nome, telefone e e-mail; gere o PIX e confira respectivamente R$ 17,10, R$ 22,50 e R$ 94,50.
+4. No `/admin/`, marque a compra como `Pago`; volte à tela da compra e use “Verificar pagamento” para conferir a confirmação, o saldo e a validade.
+5. No painel, tente agendar uma segunda-feira (deve ser rejeitada) e uma terça a sexta dentro do prazo (deve ser aceita). Marque a utilização duas vezes e confirme que a contagem cresce apenas uma vez.
+
+Pedidos da Pizzaria Varanda continuam usando `pending_confirmation`/`confirmed` e não recebem regra de PIX, percentual ou validade da Fer.

@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { classifyMicropigmentation, normalizeCustomer, normalizePartySize, validatePizzeriaDelivery } from "../api/orders.js";
+import { addCalendarMonths, calculatePlatformSplit, calculateValidity, validateAppointmentDate } from "../api/_combo-rules.js";
+import { createPixCopyPaste } from "../api/_pix.js";
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
@@ -50,6 +52,32 @@ test("os dados mínimos do cliente são normalizados e validados", () => {
   assert.throws(() => normalizeCustomer({ name: "A", phone: "1" }), /nome completo/);
 });
 
+test("a entrada da Fer é calculada em centavos a partir de 15%", () => {
+  assert.deepEqual(calculatePlatformSplit(11400, 1500), { platformFeeCents: 1710, partnerBalanceCents: 9690 });
+  assert.deepEqual(calculatePlatformSplit(15000, 1500), { platformFeeCents: 2250, partnerBalanceCents: 12750 });
+  assert.deepEqual(calculatePlatformSplit(63000, 1500), { platformFeeCents: 9450, partnerBalanceCents: 53550 });
+});
+
+test("as validades usam dias e meses-calendário", () => {
+  assert.deepEqual(calculateValidity({ validity_type: "days", validity_days: 30 }, "2026-09-15"), { validFrom: "2026-09-15", validUntil: "2026-10-15" });
+  assert.deepEqual(calculateValidity({ validity_type: "months", validity_months: 2 }, "2026-09-15"), { validFrom: "2026-09-15", validUntil: "2026-11-15" });
+  assert.equal(addCalendarMonths("2026-01-31", 1), "2026-02-28");
+});
+
+test("agendamento da Fer aceita terça a sexta e rejeita vencimento e outros dias", () => {
+  const rules = { validFrom: "2026-09-01", validUntil: "2026-12-31", allowedWeekdays: [2, 3, 4, 5] };
+  assert.doesNotThrow(() => validateAppointmentDate("2026-09-15", rules));
+  assert.throws(() => validateAppointmentDate("2026-09-14", rules), /terça a sexta/);
+  assert.throws(() => validateAppointmentDate("2027-01-05", rules), /vencido/);
+});
+
+test("o PIX copia e cola contém exatamente o valor da entrada", () => {
+  const pix = createPixCopyPaste({ key: "teste@example.com", merchantName: "ComboClub", merchantCity: "Agudo", amountCents: 9450, txid: "PEDIDO123" });
+  assert.match(pix, /540594\.50/);
+  assert.doesNotMatch(pix, /630\.00/);
+  assert.match(pix, /6304[0-9A-F]{4}$/);
+});
+
 test("as regras de pizza especial e borda são obrigatórias no backend", () => {
   assert.throws(() => validatePizzeriaDelivery(["combo-casal"], false), /Confirme as regras/);
   assert.throws(() => validatePizzeriaDelivery(["combo-casal"], true, [{ isSpecial: true }]), /especiais/);
@@ -71,6 +99,17 @@ test("a migration preserva pedidos, créditos e leads em tabelas próprias", () 
   const sql = read("migrations/001_unified_combo_platform.sql");
   for (const table of ["combo_orders", "combo_order_items", "combo_entitlements", "combo_leads"]) assert.match(sql, new RegExp(`CREATE TABLE IF NOT EXISTS ${table}`));
   assert.match(sql, /products_merchant_slug_slug_key/);
+});
+
+test("a nova migration configura apenas a Fer e preserva snapshots financeiros", () => {
+  const sql = read("migrations/003_fer_payment_validity_and_usage.sql");
+  assert.match(sql, /platform_fee_bps = 1500/);
+  assert.match(sql, /ARRAY\[2,3,4,5\]/);
+  assert.match(sql, /DATE '2026-09-01'/);
+  assert.match(sql, /DATE '2026-12-31'/);
+  assert.match(sql, /CREATE TABLE IF NOT EXISTS combo_appointments/);
+  assert.match(sql, /appointment_id uuid NOT NULL UNIQUE/);
+  assert.doesNotMatch(sql, /WHERE merchant_slug = 'pizzaria-varandas'/);
 });
 
 test("as páginas não referenciam PNG ou JPEG", () => {
