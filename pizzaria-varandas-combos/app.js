@@ -7,6 +7,9 @@ const fallbackCombos = [
 let combos = fallbackCombos;
 const selected = new Set();
 const money = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+const discountPercentage = 10;
+const discountedPrice = (originalPrice) => originalPrice * (1 - discountPercentage / 100);
+const discountedPriceCents = (originalPriceCents) => Math.round(discountedPrice(originalPriceCents));
 const grid = document.querySelector("#combo-grid");
 const list = document.querySelector("#selected-list");
 const total = document.querySelector("#total-price");
@@ -26,11 +29,13 @@ function chosenCombos() {
 function renderCards() {
   grid.innerHTML = combos.map((combo) => {
     const active = selected.has(combo.slug);
-    const price = combo.purchaseMode === "contact" ? "Consultar / Reservar" : money.format(combo.priceCents / 100);
+    const price = combo.purchaseMode === "contact"
+      ? '<span class="consult-price">Consultar / Reservar</span>'
+      : `<span class="price-off">${discountPercentage}% OFF</span><span class="price-original">De <s>${money.format(combo.priceCents / 100)}</s></span><strong class="price-promotional">Por ${money.format(discountedPriceCents(combo.priceCents) / 100)}</strong>`;
     const action = combo.purchaseMode === "contact" ? "Consultar / Reservar" : "Escolher";
     return `<article class="combo-card ${active ? "selected" : ""} ${combo.available ? "" : "unavailable"}">
       <span class="limited">Oferta por tempo limitado</span>
-      <div class="combo-content"><h3>${escapeHtml(combo.name)}</h3><p>${escapeHtml(combo.description)}</p><span class="price">${price}</span>
+      <div class="combo-content"><h3>${escapeHtml(combo.name)}</h3><p>${escapeHtml(combo.description)}</p><div class="price">${price}</div>
       <span class="availability">${combo.available ? "Disponível" : "Oferta encerrada"}</span>
       <button class="button card-button" type="button" data-id="${escapeHtml(combo.slug)}" aria-pressed="${active}" ${combo.available ? "" : "disabled"}>${active ? "Escolhido ✓" : action}</button></div>
     </article>`;
@@ -40,11 +45,11 @@ function renderCards() {
 function updateSelection() {
   const chosen = chosenCombos();
   const festaSelected = chosen.some((combo) => combo.purchaseMode === "contact");
-  const totalCents = chosen.filter((combo) => Number.isInteger(combo.priceCents)).reduce((sum, combo) => sum + combo.priceCents, 0);
+  const totalCents = chosen.filter((combo) => Number.isInteger(combo.priceCents)).reduce((sum, combo) => sum + discountedPriceCents(combo.priceCents), 0);
   navCount.textContent = chosen.length;
   status.textContent = chosen.length ? `${chosen.length} ${chosen.length === 1 ? "combo selecionado" : "combos selecionados"}` : "Nenhum selecionado";
   total.textContent = festaSelected ? "Consulta / reserva" : chosen.length ? money.format(totalCents / 100) : "R$ —";
-  list.innerHTML = chosen.length ? chosen.map((combo) => `<li><span>${escapeHtml(combo.name)}</span><strong>${combo.purchaseMode === "contact" ? "Consultar" : money.format(combo.priceCents / 100)}</strong></li>`).join("") : '<li class="empty-state">Clique em “Escolher” nos combos acima.</li>';
+  list.innerHTML = chosen.length ? chosen.map((combo) => `<li><span>${escapeHtml(combo.name)}</span><strong>${combo.purchaseMode === "contact" ? "Consultar" : money.format(discountedPriceCents(combo.priceCents) / 100)}</strong></li>`).join("") : '<li class="empty-state">Clique em “Escolher” nos combos acima.</li>';
   deliveryRules.hidden = !chosen.some((combo) => combo.purchaseMode === "order");
   deliveryRules.querySelector("input").required = !deliveryRules.hidden;
   festaFields.hidden = !festaSelected;

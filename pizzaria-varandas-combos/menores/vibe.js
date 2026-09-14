@@ -12,6 +12,9 @@ const deliveryRules = document.querySelector("#delivery-rules");
 const festaFields = document.querySelector("#festa-fields");
 const submitButton = document.querySelector("#submit-order");
 const money = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+const discountPercentage = 10;
+const discountedPrice = (originalPrice) => originalPrice * (1 - discountPercentage / 100);
+const discountedPriceCents = (originalPriceCents) => Math.round(discountedPrice(originalPriceCents));
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character]);
 
 function chosenCombos() { return combos.filter((combo) => selected.has(combo.slug)); }
@@ -19,16 +22,16 @@ function chosenCombos() { return combos.filter((combo) => selected.has(combo.slu
 function render() {
   grid.innerHTML = combos.map((combo) => {
     const active = selected.has(combo.slug);
-    const price = combo.purchaseMode === "contact" ? "CONSULTAR / RESERVAR" : money.format(combo.priceCents / 100);
-    return `<article class="combo ${active ? "selected" : ""} ${combo.available ? "" : "unavailable"}"><span class="limited">Oferta por tempo limitado</span><div class="combo-content"><h3>${escapeHtml(combo.name)}</h3><p>${escapeHtml(combo.description)}</p><span class="price">${price}</span><span class="availability">${combo.available ? "DISPONÍVEL" : "OFERTA ENCERRADA"}</span><button class="pick" type="button" data-id="${escapeHtml(combo.slug)}" aria-pressed="${active}" ${combo.available ? "" : "disabled"}>${active ? "ESCOLHIDO ✓" : combo.purchaseMode === "contact" ? "CONSULTAR / RESERVAR" : "ESCOLHER"}</button></div></article>`;
+    const price = combo.purchaseMode === "contact" ? '<span class="consult-price">CONSULTAR / RESERVAR</span>' : `<span class="price-off">${discountPercentage}% OFF</span><span class="price-original">DE <s>${money.format(combo.priceCents / 100)}</s></span><strong class="price-promotional">POR ${money.format(discountedPriceCents(combo.priceCents) / 100)}</strong>`;
+    return `<article class="combo ${active ? "selected" : ""} ${combo.available ? "" : "unavailable"}"><span class="limited">Oferta por tempo limitado</span><div class="combo-content"><h3>${escapeHtml(combo.name)}</h3><p>${escapeHtml(combo.description)}</p><div class="price">${price}</div><span class="availability">${combo.available ? "DISPONÍVEL" : "OFERTA ENCERRADA"}</span><button class="pick" type="button" data-id="${escapeHtml(combo.slug)}" aria-pressed="${active}" ${combo.available ? "" : "disabled"}>${active ? "ESCOLHIDO ✓" : combo.purchaseMode === "contact" ? "CONSULTAR / RESERVAR" : "ESCOLHER"}</button></div></article>`;
   }).join("");
   const chosen = chosenCombos();
   const festaSelected = chosen.some((combo) => combo.purchaseMode === "contact");
-  const cents = chosen.filter((combo) => Number.isInteger(combo.priceCents)).reduce((sum, combo) => sum + combo.priceCents, 0);
+  const cents = chosen.filter((combo) => Number.isInteger(combo.priceCents)).reduce((sum, combo) => sum + discountedPriceCents(combo.priceCents), 0);
   document.querySelector("#nav-count").textContent = chosen.length;
   document.querySelector("#selection-status").textContent = `${chosen.length} ${chosen.length === 1 ? "combo" : "combos"}`;
   document.querySelector("#total-price").textContent = festaSelected ? "CONSULTA / RESERVA" : chosen.length ? money.format(cents / 100) : "R$ —";
-  document.querySelector("#selected-list").innerHTML = chosen.length ? chosen.map((combo) => `<li><span>${escapeHtml(combo.name)}</span><b>${combo.purchaseMode === "contact" ? "CONSULTAR" : money.format(combo.priceCents / 100)}</b></li>`).join("") : '<li class="empty">Escolhe um combo ali em cima ✦</li>';
+  document.querySelector("#selected-list").innerHTML = chosen.length ? chosen.map((combo) => `<li><span>${escapeHtml(combo.name)}</span><b>${combo.purchaseMode === "contact" ? "CONSULTAR" : money.format(discountedPriceCents(combo.priceCents) / 100)}</b></li>`).join("") : '<li class="empty">Escolhe um combo ali em cima ✦</li>';
   deliveryRules.hidden = !chosen.some((combo) => combo.purchaseMode === "order");
   deliveryRules.querySelector("input").required = !deliveryRules.hidden;
   festaFields.hidden = !festaSelected;

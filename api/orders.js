@@ -1,11 +1,19 @@
 import { randomUUID } from "node:crypto";
 import { getSql } from "./_db.js";
-import { calculatePlatformSplit, calculateValidity } from "./_combo-rules.js";
+import { calculateDiscountedPriceCents, calculatePlatformSplit, calculateValidity } from "./_combo-rules.js";
 import { createPixCopyPaste, pixConfigFromEnv } from "./_pix.js";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const ALLOWED_MERCHANTS = new Set(["fer-reinher", "pizzaria-varandas"]);
 const PIZZERIA_DELIVERY_SLUGS = new Set(["combo-casal", "combo-compartilhar"]);
+const PIZZERIA_DISCOUNT_PERCENTAGE = 10;
+
+export function getFinalUnitPriceCents(merchantSlug, originalPriceCents) {
+  const priceCents = Number(originalPriceCents);
+  return merchantSlug === "pizzaria-varandas"
+    ? calculateDiscountedPriceCents(priceCents, PIZZERIA_DISCOUNT_PERCENTAGE)
+    : priceCents;
+}
 
 function parseBody(request) {
   if (typeof request.body === "string") return JSON.parse(request.body);
@@ -97,11 +105,15 @@ export default async function handler(request, response) {
       }
     }
 
+    const pricedProducts = products.map((product) => ({
+      ...product,
+      final_price_cents: getFinalUnitPriceCents(merchantSlug, product.price_cents),
+    }));
     const includesMicropigmentation = productSlugs.includes("micropigmentacao");
     const orderId = randomUUID();
     const publicToken = randomUUID();
-    const totalCents = products.reduce((sum, product) => sum + Number(product.price_cents), 0);
-    const itemSnapshots = products.map((product) => ({ product, ...calculatePlatformSplit(Number(product.price_cents), Number(product.platform_fee_bps ?? 0)) }));
+    const totalCents = pricedProducts.reduce((sum, product) => sum + product.final_price_cents, 0);
+    const itemSnapshots = pricedProducts.map((product) => ({ product, ...calculatePlatformSplit(product.final_price_cents, Number(product.platform_fee_bps ?? 0)) }));
     const platformFeeCents = itemSnapshots.reduce((sum, item) => sum + item.platformFeeCents, 0);
     const partnerBalanceCents = totalCents - platformFeeCents;
     const [clock] = await sql`SELECT (now() AT TIME ZONE 'America/Sao_Paulo')::date::text AS purchase_date`;
@@ -119,7 +131,7 @@ export default async function handler(request, response) {
     for (const snapshot of itemSnapshots) {
       const { product } = snapshot;
       const validity = calculateValidity(product, purchaseDate);
-      queries.push(sql`INSERT INTO combo_order_items (id, order_id, product_id, product_slug, product_name, unit_price_cents, quantity, platform_fee_bps, platform_fee_cents, partner_balance_cents, validity_type, valid_from, valid_until, allowed_weekdays, total_uses, used_uses) VALUES (${randomUUID()}, ${orderId}, ${product.id}, ${product.slug}, ${product.name}, ${product.price_cents}, 1, ${Number(product.platform_fee_bps ?? 0)}, ${snapshot.platformFeeCents}, ${snapshot.partnerBalanceCents}, ${product.validity_type ?? "none"}, ${validity.validFrom}, ${validity.validUntil}, ${product.allowed_weekdays ?? [0,1,2,3,4,5,6]}, ${Number(product.total_uses ?? 1)}, 0)`);
+      queries.push(sql`INSERT INTO combo_order_items (id, order_id, product_id, product_slug, product_name, unit_price_cents, quantity, platform_fee_bps, platform_fee_cents, partner_balance_cents, validity_type, valid_from, valid_until, allowed_weekdays, total_uses, used_uses) VALUES (${randomUUID()}, ${orderId}, ${product.id}, ${product.slug}, ${product.name}, ${product.final_price_cents}, 1, ${Number(product.platform_fee_bps ?? 0)}, ${snapshot.platformFeeCents}, ${snapshot.partnerBalanceCents}, ${product.validity_type ?? "none"}, ${validity.validFrom}, ${validity.validUntil}, ${product.allowed_weekdays ?? [0,1,2,3,4,5,6]}, ${Number(product.total_uses ?? 1)}, 0)`);
       const entitlements = Array.isArray(product.entitlements) ? product.entitlements : JSON.parse(product.entitlements || "[]");
       for (const entitlement of entitlements) queries.push(sql`INSERT INTO combo_entitlements (id, order_id, product_slug, service_code, service_name, total_units, used_units, status) VALUES (${randomUUID()}, ${orderId}, ${product.slug}, ${entitlement.code}, ${entitlement.name}, ${Number(entitlement.units)}, 0, 'pending')`);
     }

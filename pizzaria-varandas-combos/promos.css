@@ -1,5 +1,6 @@
 .combo-card p,.combo p{font-size:.92rem;line-height:1.5;color:#fff1df;margin-bottom:16px}
-.combo-card .price,.combo .price{font-size:1.9rem;line-height:1.05;letter-spacing:-.04em;transform:none;margin-bottom:8px}
+.combo-card .price,.combo .price{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;line-height:1.05;letter-spacing:-.02em;transform:none;margin-bottom:10px;padding-right:72px}
+.price-original{font:600 .78rem "DM Sans",sans-serif;color:#fff1df;letter-spacing:0;white-space:nowrap}.combo .price-original{font-family:"Space Grotesk",sans-serif}.price-original s{text-decoration-thickness:1.5px;text-decoration-color:#ffc874}.price-promotional{font-family:Fraunces,serif;font-size:2.35rem;font-weight:900;color:#ffc874;white-space:nowrap}.combo .price-promotional{font-family:"Archivo Black",sans-serif;font-size:2rem;color:var(--yellow)}.price-off{position:absolute;right:0;bottom:5px;padding:6px 7px;border-radius:999px;background:#fff;color:#7e2016;font:800 .66rem "DM Sans",sans-serif;letter-spacing:.04em;white-space:nowrap}.combo .price-off{border-radius:0;background:var(--lime);color:var(--black);font-family:"Space Grotesk",sans-serif}.consult-price{display:block;font-family:Fraunces,serif;font-size:1.9rem;font-weight:900;color:#ffc874}.combo .consult-price{font-family:"Archivo Black",sans-serif;color:var(--yellow)}
 .limited{position:absolute;z-index:2;top:20px;left:20px;padding:7px 9px;background:#f8bd60;color:#241714;font-size:.64rem;font-weight:800;text-transform:uppercase}
 .availability{display:block;margin:0 0 12px;font-size:.73rem;font-weight:700}
 .combo-card.unavailable,.combo.unavailable{filter:saturate(.25)}
@@ -9,4 +10,4 @@
 .festa-fields{padding:16px;margin-bottom:15px;background:#f7ead7;border-left:3px solid #a93622}
 .festa-fields label:last-child{margin-bottom:0}
 [hidden]{display:none!important}
-@media(max-width:760px){.combo-card p,.combo p{font-size:1rem}.limited{font-size:.68rem}.delivery-rules{font-size:.92rem!important}}
+@media(max-width:760px){.combo-card p,.combo p{font-size:1rem}.limited{font-size:.68rem}.delivery-rules{font-size:.92rem!important}.combo-card .price,.combo .price{padding-right:68px}.price-promotional{font-size:2.2rem}.combo .price-promotional{font-size:1.85rem}}

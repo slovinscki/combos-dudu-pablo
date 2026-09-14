@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { classifyMicropigmentation, normalizeCustomer, normalizePartySize, validatePizzeriaDelivery } from "../api/orders.js";
-import { addCalendarMonths, calculatePlatformSplit, calculateValidity, validateAppointmentDate } from "../api/_combo-rules.js";
+import { classifyMicropigmentation, getFinalUnitPriceCents, normalizeCustomer, normalizePartySize, validatePizzeriaDelivery } from "../api/orders.js";
+import { addCalendarMonths, calculateDiscountedPriceCents, calculatePlatformSplit, calculateValidity, validateAppointmentDate } from "../api/_combo-rules.js";
 import { createPixCopyPaste } from "../api/_pix.js";
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
@@ -56,6 +56,24 @@ test("a entrada da Fer é calculada em centavos a partir de 15%", () => {
   assert.deepEqual(calculatePlatformSplit(11400, 1500), { platformFeeCents: 1710, partnerBalanceCents: 9690 });
   assert.deepEqual(calculatePlatformSplit(15000, 1500), { platformFeeCents: 2250, partnerBalanceCents: 12750 });
   assert.deepEqual(calculatePlatformSplit(63000, 1500), { platformFeeCents: 9450, partnerBalanceCents: 53550 });
+});
+
+test("os combos com preço da Pizzaria Varanda recebem exatamente 10% de desconto", () => {
+  assert.equal(calculateDiscountedPriceCents(9500, 10), 8550);
+  assert.equal(calculateDiscountedPriceCents(12000, 10), 10800);
+  assert.equal(getFinalUnitPriceCents("pizzaria-varandas", 9500), 8550);
+  assert.equal(getFinalUnitPriceCents("pizzaria-varandas", 12000), 10800);
+  assert.equal(getFinalUnitPriceCents("fer-reinher", 11400), 11400);
+  for (const path of ["pizzaria-varandas-combos/app.js", "pizzaria-varandas-combos/menores/vibe.js"]) {
+    const app = read(path);
+    assert.match(app, /const discountPercentage = 10/);
+    assert.match(app, /price-original/);
+    assert.match(app, /price-promotional/);
+    assert.match(app, /discountedPriceCents\(combo\.priceCents\)/);
+  }
+  const orders = read("api/orders.js");
+  assert.match(orders, /merchantSlug === "pizzaria-varandas"[\s\S]*?calculateDiscountedPriceCents/);
+  assert.match(orders, /unit_price_cents[\s\S]*?product\.final_price_cents/);
 });
 
 test("as validades usam dias e meses-calendário", () => {

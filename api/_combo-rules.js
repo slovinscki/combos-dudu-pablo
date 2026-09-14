@@ -1,5 +1,16 @@
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
+export function calculateDiscountedPrice(originalPrice, discountPercentage) {
+  if (!Number.isFinite(originalPrice) || originalPrice < 0) throw new Error("Valor original inválido.");
+  if (!Number.isFinite(discountPercentage) || discountPercentage < 0 || discountPercentage > 100) throw new Error("Percentual de desconto inválido.");
+  return originalPrice * (1 - discountPercentage / 100);
+}
+
+export function calculateDiscountedPriceCents(originalPriceCents, discountPercentage) {
+  if (!Number.isInteger(originalPriceCents)) throw new Error("Valor original em centavos inválido.");
+  return Math.round(calculateDiscountedPrice(originalPriceCents, discountPercentage));
+}
+
 export function calculatePlatformSplit(totalCents, platformFeeBps) {
   if (!Number.isInteger(totalCents) || totalCents < 0) throw new Error("Valor total inválido.");
   if (!Number.isInteger(platformFeeBps) || platformFeeBps < 0 || platformFeeBps > 10000) throw new Error("Percentual da plataforma inválido.");
